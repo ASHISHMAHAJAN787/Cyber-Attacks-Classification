@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1 class="mb-4">Intrusion Detection System Model Comparison</h1>
+    
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5>Performance Metrics Overview</h5>
+                </div>
+                <div class="card-body table-container">
+                    {{ metrics_table|safe }}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <h2 class="mb-4">Models</h2>
+    <div class="row">
+        {% for model in models %}
+        <div class="col-md-4">
+            <div class="card model-card">
+                <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
+                    <h5>{{ model.name }}</h5>
+                    <span class="badge bg-{% if model.accuracy > 0.8 %}success{% elif model.accuracy > 0.7 %}warning{% else %}danger{% endif %} accuracy-badge">
+                        {{ "%.2f"|format(model.accuracy * 100) }}%
+                    </span>
+                </div>
+                <div class="card-body">
+                    <div class="performance-summary">
+                        <p><strong>Training Time:</strong> {{ "%.2f"|format(model.training_time) }} seconds</p>
+                        <p><strong>Error Rate:</strong> {{ "%.2f"|format(model.error * 100) }}%</p>
+                        <p><strong>F1-Score (Weighted Avg):</strong> {{ "%.2f"|format(model.weighted_avg_f1 * 100) }}%</p>
+                    </div>
+                    
+                    <img src="data:image/png;base64,{{ model.confusion_matrix_img }}" 
+                         alt="{{ model.name }} Confusion Matrix" 
+                         class="img-fluid confusion-matrix mt-3">
+                    
+                    <div class="d-grid mt-3">
+                        <a href="/model/{{ model.name }}" class="btn btn-outline-primary">
+                            View Detailed Report
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% endblock %}

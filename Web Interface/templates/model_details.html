@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h2>{{ model.name }} Model Details</h2>
+                    <span class="badge bg-{% if model.accuracy > 0.8 %}success{% elif model.accuracy > 0.7 %}warning{% else %}danger{% endif %} accuracy-badge">
+                        Accuracy: {{ "%.2f"|format(model.accuracy * 100) }}%
+                    </span>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="performance-summary">
+                                <h4>Performance Summary</h4>
+                                <ul class="list-group mb-4">
+                                    <li class="list-group-item">
+                                        <strong>Accuracy:</strong> {{ "%.2f"|format(model.accuracy * 100) }}%
+                                    </li>
+                                    <li class="list-group-item">
+                                        <strong>Error Rate:</strong> {{ "%.2f"|format(model.error * 100) }}%
+                                    </li>
+                                    <li class="list-group-item">
+                                        <strong>Precision (Weighted Avg):</strong> {{ "%.2f"|format(model.classification_report['weighted avg']['precision'] * 100) }}%
+                                    </li>
+                                    <li class="list-group-item">
+                                        <strong>Recall (Weighted Avg):</strong> {{ "%.2f"|format(model.classification_report['weighted avg']['recall'] * 100) }}%
+                                    </li>
+                                    <li class="list-group-item">
+                                        <strong>F1-Score (Weighted Avg):</strong> {{ "%.2f"|format(model.classification_report['weighted avg']['f1-score'] * 100) }}%
+                                    </li>
+                                    <li class="list-group-item">
+                                        <strong>Training Time:</strong> {{ "%.2f"|format(model.training_time) }} seconds
+                                    </li>
+                                </ul>
+                            </div>
+                        <div class="col-md-6">
+                            <h4>Confusion Matrix</h4>
+                            <img src="data:image/png;base64,{{ model.confusion_matrix_img }}" 
+                                 alt="{{ model.name }} Confusion Matrix" 
+                                 class="img-fluid confusion-matrix">
+                        </div>
+                    </div>
+                    
+                    <div class="row mt-4">
+                        <div class="col-md-12">
+                            <h4>Classification Report</h4>
+                            <div class="table-container">
+                                {{ classification_report|safe }}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <a href="/" class="btn btn-outline-secondary">
+                            Back to Model Comparison
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
